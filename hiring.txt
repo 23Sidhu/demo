@@ -3,3 +3,4 @@ siddhartha
 banglore
 mechanical engineering
 aws
+solo
