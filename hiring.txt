@@ -4,3 +4,4 @@ banglore
 mechanical engineering
 aws
 solo
+solo 2
