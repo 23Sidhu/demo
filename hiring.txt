@@ -7,3 +7,4 @@ solo
 solo 2
 done
 done 2
+new
