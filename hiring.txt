@@ -1,10 +1,28 @@
-siddhartha
-987654321
-banglore
-mechanical engineering
-aws
-solo
-solo 2
-done
-done 2
-new
+1.Managed Kubernetes Service – Amazon EKS
+
+   . Amazon Elastic Kubernetes Service (Amazon EKS) is a managed Kubernetes service to run Kubernetes in the AWS cloud and on-premises data centers.
+   . Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
+
+2. MongoDB
+
+   . MongoDB makes it easy for developers to store structured or unstructured data.
+   . It uses a JSON-like format to store documents.
+   . developing scalable applications with evolving data schemas
+
+3. Flask
+
+  . Flask is a micro web framework written in Python. It is classified as a microframework because it does not require particular tools or libraries
+  . It has no database
+  . There is a built-in development server and a fast debugger provided.
+
+
+4. ReactJS
+
+   . React is a free and open-source front-end JavaScript library for building user interfaces based on components
+   . It's used for building interactive user interfaces and web applications quickly and efficiently with significantly less code than you would with vanilla JavaScript.
+
+
+5. docker
+
+  . you can quickly deploy and scale applications into any environment and know your code will run
+  . Programming language: Go
