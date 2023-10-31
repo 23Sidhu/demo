@@ -1,0 +1,144 @@
+Install jenkins on ubuntu server
+   for installing jenkins you should need java first
+
+      sudo apt update
+      sudo apt install fontconfig openjdk-17-jre
+      curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee   /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+      echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null
+      sudo apt-get update
+      sudo apt-get install jenkins
+      sudo systemctl start jenkins
+      sudo systemctl status jenkins
+     sudo systemctl enable jenkins
+
+copy the public ip and paste in browser with 8080 port
+cat /var/lib/jenkins/intialadminPassword copy this and paste in console server with sudo cat
+it wiil gwt password and paste in jenkins website
+Install suggested plugins
+Create an initial admin user.
+
+
+
+write Dockerfile create docker tools image, install AWS CLI, install kubectl, Install git,Install Docker,Install helm on ubuntu base image through Jenkins Pipeline? 
+       
+# Use an official Ubuntu as the base image
+FROM ubuntu:latest
+
+# Install essential packages and update
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install AWS CLI
+RUN curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+
+# Install kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && \
+    mv kubectl /usr/local/bin/
+
+# Install Docker
+RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
+    sh get-docker.sh && \
+    rm get-docker.sh
+
+# Install Helm
+RUN curl -LO "https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz" && \
+    tar -zxvf helm-v3.7.0-linux-amd64.tar.gz && \
+    chmod +x linux-amd64/helm && \
+    mv linux-amd64/helm /usr/local/bin/ && \
+    rm -rf helm-v3.7.0-linux-amd64.tar.gz linux-amd64
+
+# Set the working directory
+WORKDIR /workspace
+
+# Define an entry point, you can override it when running the container
+CMD ["/bin/bash"]
+
+
+apply this command   sudo docker build -t my-dev-tool .
+
+
+
+ Go to jenkins portal -> add new item -> give name ->select pipeline -> add github url in github repository ->
+                          Give AWS credentials in Jenkins
+     Jenkins Dashboard -> Manage Jenkins-> credentials ->select on Global-> AWSusername,password and AccountId.   
+
+   2) Install Jenkins plugins
+
+         i)Docker plugin
+         ii)Docker pipeline plugin
+         iii)Amazon Ecr Plugin
+
+  3)Create Amazon ECR Repository
+       i) Name: 23sidhu
+       ii)select on private ->Save
+       iii) REPOSITORY_URI = "387504703653.dkr.ecr.ap-south-1.amazonaws.com/23sidhu "
+
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+
+
+
+Now write a pipeline 
+   
+ pipeline {
+    agent any
+    environment {
+        AWS_ACCOUNT_ID="your aws id"
+        AWS_DEFAULT_REGION="ap-south-1"
+        IMAGE_REPO_NAME="your repository name"
+        IMAGE_TAG="latest"
+        REPOSITORY_URI = "ecr url"
+    }
+    
+    stages {
+        stage('Logging into AWS ECR') {
+            steps {
+                script {
+                sh """aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"""
+                }
+            }
+        }
+        
+        stage ("git checkout") {
+            steps {
+                git branch: 'main' , url: "your git url"
+            }
+        } 
+        
+        stage ("Building Image") {
+            steps {
+                script {
+                   dockerImage = docker.build "${IMAGE_REPO_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+        
+        stage('Pushing to ECR') {
+            steps{  
+              script {
+                sh """docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:$IMAGE_TAG"""
+                sh """docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}"""
+              }
+            }
+        }
+   }    
+ }
+
+ 
+Now do build 
+the code will get success and projects is also success
+   
