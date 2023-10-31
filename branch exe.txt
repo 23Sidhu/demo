@@ -1,12 +1,85 @@
-done 
-done
-task 1 
-task 2
-fb
-fb 1
+Integrated with AWS s3 bucket Using Jenkins
+
+1.launch instance and install java and Jenkins in the instances & open Jenkins server with 
+8080 port 
+2.Now create a Jenkins username and password
+Next
+Jenkins Dashboard --> go to the manage Jenkins --> go to plugins --> go to available plugin 
+and search there --> s3 publisher is there install it
 
 
-csasfc
-ascfcasfsc
+Now create s3 bucket
+S3 bucket open the application --> click on create --> give a bucket name and region of a 
+bucket --> object ownership is select ACLs enabled --> and disable the public access 
+and click on next --> click on create bucket.
 
 
+Create an IAM role
+IAM role 
+Open the I am role application --> click on user --> click on create user --> give a name 
+and select next option --> set permission has select “Attach policies directly” --> 
+search “s3” and select this one” AmazonS3FullAccess”--> click on next --> and create 
+user --> create a access and private key and keep in safe.
+
+Go to Jenkins dashboard
+Jenkins Dashboard --> go to the manage Jenkins --> go to the system --> go and search there 
+S3 and go to the s3 bucket and --> give a bucket name --> and provide a access key 
+and private key use it here. --> click on test connection it shows connection 
+succussed --> and save it
+
+
+Now create an free style job on Jenkins
+“Source Code Management” select git --> give a URL credentials --> and give a branch 
+name --> comes to post-build action --> select “publish artifact to s3 bucket” --> select files 
+upload --> destination bucket select a s3 bucket region and leave it default other options--> 
+and save it --> click on build option --> and check your console output.
+
+
+Write this code on your github
+pipeline{
+ agent {label 'agentlinux'}
+     stages{
+         stage{"Check version} {
+              steps{
+                     sh "node --version"
+                     sh "npm --version"
+              }
+         }
+     }
+ }
+
+
+
+what is Kubernetes service mesh
+A Kubernetes service mesh or any type of service mesh does not introduce new logic or functionality to the runtime environment. 
+ Kubernetes network service mesh abstracts the logic that controls service to service communications to a layer of infrastructure andout of individual services.
+
+
+Benefits of Service Mesh in Kubernetes
+
+• API (Kubernetes Custom Resource Definitions (CRD), programmable interface)
+• Communication resiliency (circuit-breaking, retries, rate limiting, timeouts)
+• Load balancing (consistent hashing, least request, zone/latency aware)
+• Observability (alerting, Layer 7 metrics, tracing)
+• Routing control (traffic mirroring, traffic shifting)
+• Security (authorization policies, end-to-end mutual TLS encryption, service level 
+and method level access control)
+• Service discovery (distributed cache)
+
+Kubernetes Service Mesh Tools
+
+NGINX Service Mesh
+NGINX Service Mesh is a lightweight, production-ready service mesh solution developed 
+by NGINX (now part of F5 Networks).
+
+Consul Connect
+Consul Connect is a service mesh solution developed by HashiCorp as part of their Consul 
+product, which is a service discovery and configuration too
+
+Linkerd
+Linkerd is another open-source service mesh that is focused on simplicity, performance, 
+and security
+
+Istio
+Istio is an open-source service mesh platform that helps manage traffic between 
+microservices within a Kubernetes cluster
